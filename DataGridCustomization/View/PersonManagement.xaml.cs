@@ -1,6 +1,7 @@
 ﻿using DataGridCustomization.Model;
 using DataGridCustomization.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -18,11 +19,19 @@ namespace DataGridCustomization.View
     /// </summary>
     public partial class PersonManagement : Window
     {
+        #region Private Members
+
         int columnOffsetWidth = 60;
         int group1ColNavCtr = 0;
         int group2ColNavCtr = 0;
         int group3ColNavCtr = 0;
         int staticColumns = 2; //First Name and Last Name..Update if add more freeze columns
+        List<Person> copiedRows = new List<Person>();
+        DataGridCell currentCell = null;
+
+        #endregion
+
+        #region Constructor
 
         public PersonManagement()
         {
@@ -31,13 +40,16 @@ namespace DataGridCustomization.View
             HideDefaultGroupColumns();
         }
 
+        #endregion
 
         #region Event Handlers
 
         private void dg1_GotFocus(object sender, RoutedEventArgs e)
         {
+
             if (e.OriginalSource.GetType() == typeof(DataGridCell))
             {
+                currentCell = e.OriginalSource as DataGridCell;//Set current Cell
                 // Starts the Edit on the row;
                 DataGrid grd = (DataGrid)sender;
                 grd.BeginEdit(e);
@@ -45,6 +57,7 @@ namespace DataGridCustomization.View
                 Control control = GetFirstChildByType<Control>(e.OriginalSource as DataGridCell);
                 if (control != null)
                 {
+
                     control.Focus();
                     ((TextBox)control).SelectAll();
                 }
@@ -53,16 +66,16 @@ namespace DataGridCustomization.View
 
         private void dg1_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            
+
             var uiElement = e.OriginalSource as UIElement;
             if (uiElement != null)
             {
                 var selectedRow = dg1.ItemContainerGenerator.ContainerFromItem(dg1.CurrentItem) as DataGridRow;
 
-                //if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
-                //{
-                //    //Clipboard.SetText()
-                //}
+                if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    PasteClipboardCopiedRows();
+                }
 
                 //Handle the Key Down 
                 if (e.Key == Key.Right || e.Key == Key.Left || e.Key == Key.Up || e.Key == Key.Down)
@@ -117,10 +130,7 @@ namespace DataGridCustomization.View
                     uiElement.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
             }
         }
-
-
-
-
+                     
         private void btnPreviousGroup1_Click(object sender, RoutedEventArgs e)
         {
             if (group1ColNavCtr > 1)
@@ -212,6 +222,14 @@ namespace DataGridCustomization.View
             }
         }
 
+        private void dg1_CopyingRowClipboardContent(object sender, DataGridRowClipboardEventArgs e)
+        {
+            //For now allow single row copy. If multiple row copy required, then need to handle
+            copiedRows.Clear();
+            copiedRows.Add(e.Item as Person);
+        }
+
+
         #endregion
 
         #region Private Methods
@@ -246,6 +264,25 @@ namespace DataGridCustomization.View
             {
                 dg1.Columns[i].Visibility = Visibility.Visible;
             }
+        }
+
+        /// <summary>
+        /// Past Copied Rows
+        /// </summary>
+        private void PasteClipboardCopiedRows()
+        {
+            //When user clicks on First Name and Paste, then Paste the Row
+            //This is required to handle cell and row level copy/paste contradiction
+            if (currentCell != null && Convert.ToString(currentCell.Column.Header) == "First Name")
+            {
+                ObservableCollection<Person> itemsSource = dg1.ItemsSource as ObservableCollection<Person>;
+                if (itemsSource != null && copiedRows.Count > 0)
+                {
+                    //Insert at the end. Code if need to set in specific Index
+                    itemsSource.Insert(itemsSource.Count, copiedRows[0]);
+                }
+            }
+
         }
         
         #region Handle Scroll If required
@@ -345,13 +382,10 @@ namespace DataGridCustomization.View
             }
             return null;
         }
-        
-        #endregion
 
         #endregion
 
-
-      
+        #endregion
     }
 
 }

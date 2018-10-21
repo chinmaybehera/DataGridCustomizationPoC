@@ -57,7 +57,8 @@
                                       CanUserAddRows="False" CanUserDeleteRows="False"  SelectedIndex="{Binding SelectedIndex}" 
                                       VerticalAlignment="Top"  AutoGenerateColumns="False"  HorizontalScrollBarVisibility="Visible"
                                       DataGridCell.GotFocus="dg1_GotFocus" PreviewKeyDown="dg1_PreviewKeyDown"
-                                      SelectionUnit="CellOrRowHeader" FrozenColumnCount="2">
+                                      SelectionUnit="CellOrRowHeader" FrozenColumnCount="2" 
+                                  CopyingRowClipboardContent="dg1_CopyingRowClipboardContent">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Width="120" Header="First Name" x:Name="dtmpFirstName">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -65,11 +66,11 @@
                                             <TextBlock Text="{Binding FirstName}" x:Name="txtFirstName"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
-                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                    <!--<DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
                                             <TextBox Text="{Binding FirstName}" x:Name="tbFirstName"/>
                                         </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>-->
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Width="120" Header="Last Name" x:Name="dtmpLastName">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -96,7 +97,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Width="60" Header="Val_02"  x:Name="dtmpVal_01_02">
+                                <DataGridTemplateColumn Width="60" Header="Val_02"  x:Name="dtmpVal_01_02" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Val_01_02}" x:Name="txtVal_01_02"/>
