@@ -278,7 +278,7 @@ namespace DataGridCustomization.View
                 ObservableCollection<Person> itemsSource = dg1.ItemsSource as ObservableCollection<Person>;
                 if (itemsSource != null && copiedRows.Count > 0)
                 {
-                    //Insert at the end. Code if need to set in specific Index
+                    //Insert at the end for now. Code if need to set in specific Index
                     itemsSource.Insert(itemsSource.Count, copiedRows[0]);
                 }
             }
